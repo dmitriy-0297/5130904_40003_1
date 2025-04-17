@@ -1,5 +1,6 @@
 # Local configuration
 .boost_location
+.DS_Store
 # Built files
 out
 # Emacs temporaries
