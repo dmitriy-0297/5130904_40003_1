@@ -49,7 +49,7 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
     }
 
     data.binaryStr = str2;
-    
+
     try {
         data.key2 = std::stoull(str2.substr(2), nullptr, 2);
     } catch (...) {
