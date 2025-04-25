@@ -16,7 +16,6 @@ struct DataStruct {
 
 std::istream& operator>>(std::istream& in, DataStruct& data) {
     // (:key1 89ull:key2 0b1000101:key3 "Data":)
-
     std::string row;
     if (!std::getline(in, row)) return in;
 
@@ -30,8 +29,7 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
     std::string str1 = row.substr(begin, end - begin);
     try {
         data.key1 = std::stoull(str1);
-    }
-    catch (...) {
+    } catch (...) {
         in.setstate(std::ios::failbit);
         return in;
     }
@@ -50,12 +48,11 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
         return in;
     }
 
-    data.binaryStr = row.substr(begin, end - begin);
+    data.binaryStr = str2;
     
     try {
         data.key2 = std::stoull(str2.substr(2), nullptr, 2);
-    }
-    catch (...) {
+    } catch (...) {
         in.setstate(std::ios::failbit);
         return in;
     }
@@ -76,7 +73,7 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
 std::ostream& operator<<(std::ostream& out, const DataStruct& data) {
     // (:key1 89ull:key2 0b1000101:key3 "Data":)
     out << "(:key1 " << data.key1 << "ull";
-    out << ":key2 "<< data.binaryStr;
+    out << ":key2 " << data.binaryStr;
 
     //теряются значимые нули:
     /*unsigned long long a = data.key2;
@@ -108,7 +105,6 @@ bool different(const DataStruct& a, const DataStruct& b) {
 
 int main() {
     // (:key1 89ull:key2 0b1000101:key3 "Data":)
-
     std::vector<DataStruct> data;
 
     /*std::istringstream iss("(:key1 89ull:key2 0b1000101:key3 \"Data\":)\n"
