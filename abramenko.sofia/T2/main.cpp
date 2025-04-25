@@ -11,6 +11,7 @@ struct DataStruct {
     unsigned long long key1 = 0;
     unsigned long long key2 = 0;
     std::string key3;
+    std::string binaryStr;
 };
 
 std::istream& operator>>(std::istream& in, DataStruct& data) {
@@ -42,9 +43,17 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
     }
     begin = row.find(' ', pos) + 1;
     end = row.find(':', begin);
-    std::string str2 = row.substr(begin + 2, end - (begin + 2));
+    std::string str2 = row.substr(begin, end - begin);
+
+    if (str2.size() < 2 || str2.substr(0, 2) != "0b") {
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
+    data.binaryStr = row.substr(begin, end - begin);
+    
     try {
-        data.key2 = std::stoull(str2, nullptr, 2);
+        data.key2 = std::stoull(str2.substr(2), nullptr, 2);
     }
     catch (...) {
         in.setstate(std::ios::failbit);
@@ -67,9 +76,10 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
 std::ostream& operator<<(std::ostream& out, const DataStruct& data) {
     // (:key1 89ull:key2 0b1000101:key3 "Data":)
     out << "(:key1 " << data.key1 << "ull";
-    out << ":key2 0b";
+    out << ":key2 "<< data.binaryStr;
 
-    unsigned long long a = data.key2;
+    //теряются значимые нули:
+    /*unsigned long long a = data.key2;
     if (a == 0) {
         out << "0";
     }
@@ -84,7 +94,7 @@ std::ostream& operator<<(std::ostream& out, const DataStruct& data) {
         for (int j = i - 1; j >= 0; j--) {
             out << binary[j];
         }
-    }
+    }*/
     out << ":key3 \"" << data.key3 << "\":)";
 
     return out;
