@@ -15,59 +15,65 @@ struct DataStruct {
 };
 
 std::istream& operator>>(std::istream& in, DataStruct& data) {
-    // (:key1 89ull:key2 0b1000101:key3 "Data":)
-    std::string row;
-    if (!std::getline(in, row)) return in;
+    while (true) {
+        std::string row;
+        if (!std::getline(in, row)) return in;
+        if (row.empty()) {
+            in.setstate(std::ios::failbit);
+            return in;
+        }
 
-    size_t pos = row.find("key1");
-    if (pos == std::string::npos) {
-        in.setstate(std::ios::failbit);
+        size_t pos = row.find("key1");
+        if (pos == std::string::npos) {
+            continue;
+        }
+        size_t begin = row.find(' ', pos) + 1;
+        size_t end = row.find("ull", begin);
+        std::string str1 = row.substr(begin, end - begin);
+
+        if (end == std::string::npos) {
+            continue;
+        }
+
+        try {
+            data.key1 = std::stoull(str1);
+        }
+        catch (...) {
+            continue;
+        }
+
+        pos = row.find("key2");
+        if (pos == std::string::npos) {
+            continue;
+        }
+        begin = row.find(' ', pos) + 1;
+        end = row.find(':', begin);
+        std::string str2 = row.substr(begin, end - begin);
+
+        if (str2.size() < 2 || str2.substr(0, 2) != "0b") {
+            continue;
+        }
+
+        data.binaryStr = str2;
+
+        try {
+            data.key2 = std::stoull(str2.substr(2), nullptr, 2);
+        }
+        catch (...) {
+            continue;
+        }
+
+        pos = row.find("key3");
+        if (pos == std::string::npos) {
+            continue;
+        }
+        begin = row.find('"', pos) + 1;
+        end = row.find('"', begin);
+        std::string str3 = row.substr(begin, end - begin);
+        data.key3 = str3;
+
         return in;
     }
-    size_t begin = row.find(' ', pos) + 1;
-    size_t end = row.find('u', begin);
-    std::string str1 = row.substr(begin, end - begin);
-    try {
-        data.key1 = std::stoull(str1);
-    } catch (...) {
-        in.setstate(std::ios::failbit);
-        return in;
-    }
-
-    pos = row.find("key2");
-    if (pos == std::string::npos) {
-        in.setstate(std::ios::failbit);
-        return in;
-    }
-    begin = row.find(' ', pos) + 1;
-    end = row.find(':', begin);
-    std::string str2 = row.substr(begin, end - begin);
-
-    if (str2.size() < 2 || str2.substr(0, 2) != "0b") {
-        in.setstate(std::ios::failbit);
-        return in;
-    }
-
-    data.binaryStr = str2;
-
-    try {
-        data.key2 = std::stoull(str2.substr(2), nullptr, 2);
-    } catch (...) {
-        in.setstate(std::ios::failbit);
-        return in;
-    }
-
-    pos = row.find("key3");
-    if (pos == std::string::npos) {
-        in.setstate(std::ios::failbit);
-        return in;
-    }
-    begin = row.find('"', pos) + 1;
-    end = row.find('"', begin);
-    std::string str3 = row.substr(begin, end - begin);
-    data.key3 = str3;
-
-    return in;
 }
 
 std::ostream& operator<<(std::ostream& out, const DataStruct& data) {
