@@ -4,12 +4,13 @@
 #include <iostream>
 #include <string>
 
-struct DataStruct
-{
+struct DataStruct {
     unsigned long long key1 = 0;
     unsigned long long key2 = 0;
     std::string key3;
 };
+
+std::string toBinary(unsigned long long a);
 
 std::istream& operator>>(std::istream& in, DataStruct& data);
 std::ostream& operator<<(std::ostream& out, const DataStruct& data);

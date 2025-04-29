@@ -1,11 +1,10 @@
 #include "DataStruct.h"
 
-#include <algorithm>
-#include <iterator>
 #include <vector>
+#include <iterator>
+#include <algorithm>
 
-int main()
-{
+int main() {
     std::vector<DataStruct> data;
 
     std::copy(
