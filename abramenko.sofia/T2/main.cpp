@@ -17,7 +17,7 @@ int main() {
         std::cout << "Looks like there is no supported record. Cannot determine input. Test skipped\n";
         return 0;
     } else if (data.size() == 1) {
-        std::cout << "Atleast one supported record type\n";
+        std::cout << "Atleast one supported record type";
     }
 
     std::sort(data.begin(), data.end(), different);
