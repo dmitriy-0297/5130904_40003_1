@@ -4,7 +4,8 @@
 #include <iterator>
 #include <algorithm>
 
-int main() {
+int main()
+{
     std::vector<DataStruct> data;
 
     std::copy(
@@ -13,16 +14,18 @@ int main() {
         std::back_inserter(data)
     );
 
-    if (data.empty()) {
+    if (data.empty())
+    {
         std::cout << "Looks like there is no supported record. Cannot determine input. Test skipped\n";
         return 0;
-    } else if (data.size() == 1) {
-        std::cout << "Atleast one supported record type";
     }
-
-    std::sort(data.begin(), data.end(), different);
-
-    if (data.size() > 1) {
+    else if (data.size() == 1)
+    {
+        std::cout << "Atleast one supported record type\n";
+    }
+    else
+    {
+        std::sort(data.begin(), data.end(), different);
         std::copy(
             data.begin(),
             data.end(),
