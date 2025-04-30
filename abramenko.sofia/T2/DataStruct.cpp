@@ -25,7 +25,9 @@ std::string toBinary(unsigned long long a) {
 std::istream& operator>>(std::istream& in, DataStruct& data) {
     while (true) {
         std::string row;
-        if (!std::getline(in, row)) return in;
+        if (!std::getline(in, row)) {
+            return in;
+        }
         if (row.empty()) {
             in.setstate(std::ios::failbit);
             return in;
@@ -64,7 +66,7 @@ std::istream& operator>>(std::istream& in, DataStruct& data) {
         size_t firstOne = str2.find_first_not_of('0', 2);
         int leadingZeros = 0;
         if (firstOne == std::string::npos) {
-            leadingZeros = str2.size();
+            leadingZeros = 0;
         } else {
             leadingZeros = firstOne - 2;
         }
@@ -111,7 +113,9 @@ std::ostream& operator<<(std::ostream& out, const DataStruct& data) {
 }
 
 bool different(const DataStruct& a, const DataStruct& b) {
-    if (a.key1 != b.key1) return a.key1 < b.key1;
+    if (a.key1 != b.key1) {
+        return a.key1 < b.key1;
+    }
 
     size_t slash_a = a.key3.find('/');
     int leadingZeros_a = 0;
@@ -142,7 +146,9 @@ bool different(const DataStruct& a, const DataStruct& b) {
     std::string binary_a = std::string(leadingZeros_a, '0') + toBinary(a.key2);
     std::string binary_b = std::string(leadingZeros_b, '0') + toBinary(b.key2);
 
-    if (binary_a != binary_b) return binary_a < binary_b;
+    if (binary_a != binary_b) {
+        return binary_a < binary_b;
+    }
 
     return key3_a.size() < key3_b.size();
 }
