@@ -48,6 +48,7 @@ static bool parsePolygon(std::istringstream& iss, Polygon& poly) {
   size_t n;
   if (!(iss >> n) || n < 3) return false;
   poly.pts.clear();
+
   std::string tok;
   for (size_t i = 0; i < n; ++i) {
     if (!(iss >> tok)) return false;
@@ -55,6 +56,13 @@ static bool parsePolygon(std::istringstream& iss, Polygon& poly) {
     if (!parsePoint(tok, pt)) return false;
     poly.pts.push_back(pt);
   }
+
+  std::vector<Point> tmp = poly.pts;
+  std::sort(tmp.begin(), tmp.end());
+  tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
+  if (tmp.size() < 3)           return false;
+  if (poly.area() == 0.0)       return false;
+
   return true;
 }
 
@@ -120,8 +128,7 @@ static void cmdMax(const std::vector<Polygon>& v, const std::string& w) {
 
 static void processCmd(const std::vector<Polygon>& v, const std::string& line) {
   std::istringstream iss(line);
-  std::string w1, w2;
-  iss >> w1 >> w2;
+  std::string w1, w2; iss >> w1 >> w2;
 
   if (w1 == "AREA")  cmdArea(v, w2);
   else if (w1 == "COUNT") cmdCount(v, w2);
