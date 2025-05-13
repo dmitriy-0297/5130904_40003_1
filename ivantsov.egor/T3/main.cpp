@@ -42,16 +42,12 @@ static bool isNumber(const std::string& str) {
   return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
 
-static bool parseBool(const std::string& str) {
-  return str == "true" || str == "1";
-}
-
 static bool parsePoint(const std::string& token, Point& point) {
   if (token.size() < 5 || token.front() != '(' || token.back() != ')') return false;
   std::string inner = token.substr(1, token.size() - 2);
   std::replace(inner.begin(), inner.end(), ';', ' ');
   std::istringstream ss(inner);
-  return static_cast<bool>(ss >> point.x >> point.y);   // явное преобразование
+  return static_cast<bool>(ss >> point.x >> point.y);
 }
 
 static bool parsePolygon(std::istringstream& iss, Polygon& polygon) {
@@ -110,10 +106,16 @@ static void processCommand(const std::vector<Polygon>& polys, const std::string&
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 2) { std::cerr << "Error: filename not provided\n"; return EXIT_FAILURE; }
+  if (argc < 2) {
+    std::cerr << "Error: filename not provided\n";
+    return EXIT_FAILURE;
+  }
 
   std::ifstream fin(argv[1]);
-  if (!fin) { std::cerr << "Error: cannot open file\n"; return EXIT_FAILURE; }
+  if (!fin) {
+    std::cerr << "Error: cannot open file\n";
+    return EXIT_FAILURE;
+  }
 
   std::vector<Polygon> polys;
   std::string line;
