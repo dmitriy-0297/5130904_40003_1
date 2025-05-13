@@ -21,13 +21,13 @@ struct Polygon {
 
   double area() const {
     if (pts.size() < 3) return 0.0;
-    long long s = 0;
+    long long sum = 0;
     for (size_t i = 0; i < pts.size(); ++i) {
       const auto& p1 = pts[i];
       const auto& p2 = pts[(i + 1) % pts.size()];
-      s += 1LL * p1.x * p2.y - 1LL * p2.x * p1.y;
+      sum += 1LL * p1.x * p2.y - 1LL * p2.x * p1.y;
     }
-    return std::abs(s) / 2.0;
+    return std::abs(sum) / 2.0;
   }
 };
 
@@ -47,8 +47,8 @@ static bool parsePoint(const std::string& tok, Point& p) {
 static bool parsePolygon(std::istringstream& iss, Polygon& poly) {
   size_t n;
   if (!(iss >> n) || n < 3) return false;
-  poly.pts.clear();
 
+  poly.pts.clear();
   std::string tok;
   for (size_t i = 0; i < n; ++i) {
     if (!(iss >> tok)) return false;
@@ -57,14 +57,16 @@ static bool parsePolygon(std::istringstream& iss, Polygon& poly) {
     poly.pts.push_back(pt);
   }
 
+  if (iss >> tok) return false;
+
   std::vector<Point> tmp = poly.pts;
   std::sort(tmp.begin(), tmp.end());
   tmp.erase(std::unique(tmp.begin(), tmp.end()), tmp.end());
-  if (tmp.size() < 3)           return false;
-  if (poly.area() == 0.0)       return false;
+  if (tmp.size() < 3 || poly.area() == 0.0) return false;
 
   return true;
 }
+
 
 static void cmdArea(const std::vector<Polygon>& v, const std::string& p) {
   double sum = 0.0;
