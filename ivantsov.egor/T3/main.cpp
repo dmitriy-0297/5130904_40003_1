@@ -6,25 +6,19 @@
 #include <iomanip>
 #include <algorithm>
 #include <cmath>
-#include <tuple>        // ← для std::tie
+#include <tuple>        // для std::tie
 
 struct Point {
   int x = 0, y = 0;
-
-  bool operator==(const Point& other) const {
-    return x == other.x && y == other.y;
-  }
-  bool operator<(const Point& other) const {
-    return std::tie(x, y) < std::tie(other.x, other.y);
-  }
+  bool operator==(const Point& other) const { return x == other.x && y == other.y; }
+  bool operator<(const Point& other)  const { return std::tie(x, y) < std::tie(other.x, other.y); }
 };
 
 struct Polygon {
   std::vector<Point> points;
 
-  bool operator==(const Polygon& other) const {
-    return points == other.points;
-  }
+  bool operator==(const Polygon& other) const { return points == other.points; }
+
   double area() const {
     if (points.size() < 3) return 0.0;
     long long sum = 0;
@@ -42,6 +36,7 @@ static bool isNumber(const std::string& str) {
   return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
 
+// ───── parsePoint и остальные вспомогательные функции ─────
 static bool parsePoint(const std::string& token, Point& point) {
   if (token.size() < 5 || token.front() != '(' || token.back() != ')') return false;
   std::string inner = token.substr(1, token.size() - 2);
@@ -54,6 +49,7 @@ static bool parsePolygon(std::istringstream& iss, Polygon& polygon) {
   size_t n;
   if (!(iss >> n) || n < 3) return false;
   polygon.points.clear();
+
   std::string tok;
   for (size_t i = 0; i < n; ++i) {
     if (!(iss >> tok)) return false;
@@ -97,25 +93,16 @@ static void processCommand(const std::vector<Polygon>& polys, const std::string&
   std::istringstream iss(line);
   std::string cmd, param;
   iss >> cmd >> param;
-  if (cmd == "AREA" && !param.empty())
-    handleArea(polys, param);
-  else if (cmd == "COUNT" && !param.empty())
-    handleCount(polys, param);
-  else
-    std::cout << "<INVALID COMMAND>\n";
+  if (cmd == "AREA" && !param.empty()) handleArea(polys, param);
+  else if (cmd == "COUNT" && !param.empty()) handleCount(polys, param);
+  else std::cout << "<INVALID COMMAND>\n";
 }
 
 int main(int argc, char* argv[]) {
-  if (argc < 2) {
-    std::cerr << "Error: filename not provided\n";
-    return EXIT_FAILURE;
-  }
+  if (argc < 2) { std::cerr << "Error: filename not provided\n"; return EXIT_FAILURE; }
 
   std::ifstream fin(argv[1]);
-  if (!fin) {
-    std::cerr << "Error: cannot open file\n";
-    return EXIT_FAILURE;
-  }
+  if (!fin) { std::cerr << "Error: cannot open file\n"; return EXIT_FAILURE; }
 
   std::vector<Polygon> polys;
   std::string line;
